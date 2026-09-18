@@ -1,0 +1,22 @@
+Emp ID,Full Name,Email Address,Dept,Title,Joining Date,Emp Type,Status,Location,Address,Mobile,DOB
+NW-1001,Aisha Rahman,aisha.rahman@northwind.com,People Ops,HR Business Partner,12/03/2019,Full Time,Active,Bangalore,"12 MG Road, Bangalore",9876500101,04/11/1990
+NW-1002,Rahul Mehta,  Rahul.Mehta@Northwind.com  ,ENGINEERING,Engineering Manager,23/07/2018,Full-time,Active,Hyderabad,"88 Banjara Hills, Hyderabad",+91 98765 00102,18/02/1987
+NW-1003,Priya Nair,priya.nair@northwind.com,Finance,Finance Lead,03/04/2020,FTE,Active,Mumbai,"21 Bandra West, Mumbai",9876500103,09/09/1991
+NW-1004,Vikram Shah,vikram.shah@northwind.com,Engineering,Staff Engineer,01/09/2022,Full Time,Active,Hyderabad,"4 Hitech City, Hyderabad",9876500104,22/01/1994
+NW-1005,Leila Haddad,leila.haddad@northwind.com,Product,PM,19/06/2021,Full Time,Active,Bangalore,"9 Indiranagar, Bangalore",9876500105,30/07/1992
+NW-1006,Daniel Okafor,daniel.okafor@northwind.com,People Ops,Recruiter,04/04/2017,Permanent,Active,Mumbai,"14 Andheri East, Mumbai",9876500106,12/12/1985
+NW-1007,Sneha Iyer,sneha.iyer@northwind.com,Legal,Counsel,28/02/2020,Full Time,Active,Bangalore,"3 Koramangala, Bangalore",9876500107,05/05/1989
+NW-1008,Neha Gupta,neha.gupta@northwind.com,Sales,Sales Director,05/11/2021,Full Time,Active,Delhi,"77 GK-2, Delhi",9876500108,16/03/1988
+NW-1009,Omar Farouk,omar.farouk@northwind.com,Engineering,SDE I,16/08/2019,Full Time,Inactive,Hyderabad,"2 Gachibowli, Hyderabad",9876500109,21/08/1995
+NW-1010,Arjun Desai,arjun.desai@northwind.com,Marketing,Brand Manager,14/02/2020,Full Time,Active,Mumbai,"55 Lower Parel, Mumbai",9876500110,01/01/1990
+NW-1011,Hannah Brooks,hannah.brooks@northwind.com,Finance,Accountant,09/09/2018,Full Time,Active,Delhi,"18 Noida Sec 18, Delhi",9876500111,11/11/1993
+NW-1012,Mei Lin,mei.lin@northwind.com,Product,Product Designer,21/12/2022,Full Time,Active,Bangalore,"6 Whitefield, Bangalore",9876500112,08/04/1996
+NW-1013,Carlos Rivera,carlos.rivera@northwind.com,Sales,Account Executive,30/01/2021,Full Time,Active,Mumbai,"31 Powai, Mumbai",9876500113,19/06/1992
+NW-1014,Fatima Zahra,fatima.zahra@northwind.com,Engineering,SDE II,07/07/2020,Full Time,Active,Hyderabad,"15 Madhapur, Hyderabad",9876500114,27/10/1993
+NW-1015,John Smith,john.smith@northwind.com,Sales,Account Executive,11/05/2019,Full Time,Active,Delhi,"4 Connaught Place, Delhi",9876500115,03/03/1986
+NW-1015,JOHN SMITH,john.smith@northwind.com,Sales,Account Exec,11/05/2019,FT,Active,Delhi,"4 Connaught Place, Delhi",9876500115,03/03/1986
+NW-1016,Meera Krishnan,meera.krishnan@northwind.com,Legal,Counsel,Q3 2019,Full Time,Active,Bangalore,"22 Jayanagar, Bangalore",9876500116,14/07/1988
+NW-1017,Karan,karan.kapoor@northwind.com,Engineering,SDE II,18/01/2023,Full Time,Active,Hyderabad,"10 Jubilee Hills, Hyderabad",9876500117,25/12/1997
+NW-1018,Ananya Rao,ananya.rao@northwind.com,People Ops,HR Generalist,08/08/2022,Full Time,Active,Bangalore,"8 HSR Layout, Bangalore",9876500118,02/02/1995
+NW-1019,Ravi Patel,ravi.patel@northwind.com,Finance,FP&A Analyst,15/10/2021,Full Time,Active,Mumbai,"17 Worli, Mumbai",9876500119,06/06/1991
+NW-1020,Lakshmi Narayan,lakshmi.narayan@northwind.com,Engineering,Intern,15/03/2024,Intern,Active,Bangalore,"1 Electronic City, Bangalore",9876500120,17/09/2002

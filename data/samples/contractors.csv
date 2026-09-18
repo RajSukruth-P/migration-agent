@@ -1,0 +1,8 @@
+ContractorID,Name,Mail,Role_or_Dept,Start,Active,Type,Phone,Address,DOB
+C-2001,Sofia Alvarez,sofia.alvarez@contract.northwind.com,Design,15-Jan-2024,Yes,Contractor,9988770011,"44 Indiranagar, Bangalore",12/03/1994
+C-2002,Tom Becker,tom.becker@contract.northwind.com,Platform,2024/02/01,Y,Consultant,9988770012,"3 Hitech City, Hyderabad",22/08/1989
+C-2003,Ananya Rao,ananya.rao@northwind.com,People Ops,08.08.2022,Yes,Contractor,9876500118,"8 HSR Layout, Bangalore",02/02/1995
+C-2004,Wei Chen,,Engineering,01-Mar-2021,Yes,Contractor,9988770014,"11 Koramangala, Bangalore",30/11/1990
+C-2005,Alex Kim,alex.kim@contract.northwind.com,Legal,11-Nov-2023,Yes,Contractor,9988770015,"9 Whitefield, Bangalore",18/01/1992
+C-2006,Jordan Blake,jordan.blake@contract.northwind.com,Sales,20 May 2023,Yes,FTC,9988770016,"2 Saket, Delhi",05/05/1993
+C-2007,Maya Joshi,maya.joshi at contract dot northwind dot com,Design,03-Mar-2022,Yes,Contractor,9988770017,"7 Powai, Mumbai",09/09/1995

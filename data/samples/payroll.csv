@@ -1,0 +1,12 @@
+employee_code,first_name,last_name,work_email,org_unit,job_title,hire_dt,employment_type,active_flag,bank_acct,home_address,mobile_no,birth_dt
+NW-1001,Aisha,Rahman,aisha.rahman@northwind.com,People Operations,HR Business Partner,03/12/2019,Permanent,Y,****1021,"12 MG Road, Bangalore",9876500101,11/04/1990
+NW-1002,Rahul,Mehta,rahul.mehta@northwind.com,Engineering,Eng Manager,07/23/2018,Permanent,Y,****8842,"88 Banjara Hills, Hyderabad",9876500102,02/18/1987
+NW-1003,Priya,Nair,priya.nair@northwind.com,Finance,Finance Lead,04/03/2020,Permanent,Y,****4410,"21 Bandra West, Mumbai",9876500103,09/09/1991
+NW-1006,Daniel,Okafor,daniel.okafor@northwind.com,People Operations,Recruiter,04/04/2017,Permanent,Y,****2201,"14 Andheri East, Mumbai",9876500106,12/12/1985
+NW-1008,Neha,Gupta,neha.gupta@northwind.com,Sales,Sales Director,11/05/2021,Permanent,Y,****6677,"77 GK-2, Delhi",9876500108,03/16/1988
+NW-1010,Arjun,Desai,arjun.desai@northwind.com,Go-To-Market,Brand Manager,02/14/2020,Permanent,Y,****1190,"55 Lower Parel, Mumbai",9876500110,01/01/1990
+NW-1012,Mei,Lin,mei.lin@northwind.com,Product,Product Designer,12/21/2022,Permanent,Y,****0004,"6 Whitefield, Bangalore",9876500112,04/08/1996
+NW-1014,Fatima,Zahra,fatima.zahra@northwind.com,Engineering,Software Engineer II,07/07/2020,Permanent,Y,****7755,"15 Madhapur, Hyderabad",9876500114,10/27/1993
+NW-1015,John,Smith,john.smith@northwind.com,Sales,Account Executive,05/11/2019,Permanent,Y,****3332,"4 Connaught Place, Delhi",9876500115,03/03/1986
+NW-1021,Samir,Khan,samir.khan@northwind.com,Engineering,SDE I,06/18/2020,Permanent,Y,****9911,"19 Kondapur, Hyderabad",9876500121,05/20/1994
+NW-1022,Deepa,Nair,deepa.nair@northwind.com,Finance,Controller,09/09/2016,Permanent,N,****5544,"8 Dwarka, Delhi",9876500122,07/07/1982

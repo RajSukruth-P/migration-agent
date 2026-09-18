@@ -1,0 +1,40 @@
+{
+  "entity": "Employee",
+  "system": "Darwinbox (mock)",
+  "identity": ["email", "legacyId"],
+  "dateFormat": "DD/MM/YYYY",
+  "fields": {
+    "firstName": { "type": "string", "required": true, "label": "First Name" },
+    "lastName": { "type": "string", "required": true, "label": "Last Name" },
+    "email": {
+      "type": "email",
+      "required": true,
+      "unique": true,
+      "label": "Email",
+      "description": "Work email. Primary identity key for reconciliation."
+    },
+    "address": { "type": "string", "required": false, "label": "Address" },
+    "jobTitle": { "type": "string", "required": false, "label": "Job Title" },
+    "department": { "type": "string", "required": false, "label": "Department" },
+    "workLocation": { "type": "string", "required": false, "label": "Work Location" },
+    "hireDate": {
+      "type": "date",
+      "required": false,
+      "format": "DD/MM/YYYY",
+      "label": "Hire Date"
+    },
+    "phoneNumber": { "type": "phone", "required": false, "label": "Phone Number" },
+    "dateOfBirth": {
+      "type": "date",
+      "required": false,
+      "format": "DD/MM/YYYY",
+      "label": "Date of Birth"
+    },
+    "legacyId": {
+      "type": "string",
+      "required": false,
+      "label": "Legacy System ID",
+      "description": "Source HRIS id. Darwinbox assigns its own Target ID on insert."
+    }
+  }
+}
