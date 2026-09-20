@@ -1,4 +1,5 @@
 import { POLICY } from "./policy";
+import { fieldLabel } from "./labels";
 import { normalizeKey } from "./text";
 import type { FieldMapping, SourceTable, TargetField } from "./types";
 import { aiMapFile, aiProfileFile } from "./llm";
@@ -44,8 +45,8 @@ function decideFromAi(input: {
       confidence: input.confidence,
       status: "ignored",
       reason: leftoverColumn(input.sourceColumn)
-        ? `Leftover source column, not in Darwinbox. ${input.reason}`
-        : `OpenRouter ignored this column (${Math.round(input.confidence * 100)}%): ${input.reason}`,
+        ? "Not used in Darwinbox."
+        : input.reason || "Not used in Darwinbox.",
     };
   }
 
@@ -58,7 +59,7 @@ function decideFromAi(input: {
       targetField: input.targetField,
       confidence: input.confidence,
       status: "auto",
-      reason: `OpenRouter mapped this at ${Math.round(input.confidence * 100)}%: ${input.reason}`,
+      reason: input.reason || "Clear match to a Darwinbox field.",
     };
   }
 
@@ -68,8 +69,8 @@ function decideFromAi(input: {
     confidence: input.confidence,
     status: "escalated",
     reason: closeCall
-      ? `"${input.sourceColumn}" could be ${input.targetField} (${Math.round(input.confidence * 100)}%) or ${second?.field} (${Math.round((second?.score ?? 0) * 100)}%). Too close to pick silently.`
-      : `OpenRouter suggested ${input.targetField} at ${Math.round(input.confidence * 100)}% without a clear winner. ${input.reason}`,
+      ? `“${input.sourceColumn}” could be ${fieldLabel(String(input.targetField))} (${Math.round(input.confidence * 100)}%) or ${fieldLabel(String(second?.field))} (${Math.round((second?.score ?? 0) * 100)}%). Too close to pick silently.`
+      : `Could be more than one Darwinbox field. ${input.reason}`,
   };
 }
 

@@ -11,11 +11,11 @@ const STEPS = [
   },
   {
     title: "Columns before rows",
-    body: "The model maps source columns to the Darwinbox schema from names plus 20–50 sample rows. Nothing is migrated until every mapping is settled.",
+    body: "Source columns are mapped to Darwinbox fields before any row is migrated.",
   },
   {
     title: "You only see the close calls",
-    body: "A column that could be two fields, or a value that failed cleanup twice. Everything else is applied and logged.",
+    body: "A column that could be two fields, or a value that cannot be cleaned. Everything else is applied and logged.",
   },
 ];
 

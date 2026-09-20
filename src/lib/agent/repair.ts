@@ -77,7 +77,7 @@ function repairDate(field: "hireDate" | "dateOfBirth", record: CanonicalRecord):
         return {
           field,
           value: parsed.iso,
-          how: `Re-parsed ${fieldLabel(field)} "${value}" from ${fileOf(source)} as ${order} on the second attempt`,
+          how: `Read ${fieldLabel(field)} “${value}” from ${fileOf(source)} as ${order === "MDY" ? "month-first" : order === "YMD" ? "year-first" : "day-first"}`,
         };
       }
     }
@@ -100,8 +100,8 @@ function repairEmail(record: CanonicalRecord): RepairResult | null {
       value: repaired,
       how:
         repaired === value.toLowerCase()
-          ? `Found Email ${repaired} in ${fileOf(source)} on the second attempt`
-          : `Repaired "${value}" into ${repaired} on the second attempt`,
+          ? `Found Email ${repaired} in ${fileOf(source)}`
+          : `Repaired “${value}” into ${repaired}`,
     };
   }
   return null;
@@ -116,7 +116,7 @@ function repairName(field: "firstName" | "lastName", record: CanonicalRecord): R
     return {
       field,
       value: found,
-      how: `Took ${fieldLabel(field)} from "${value}" in ${fileOf(source)} on the second attempt`,
+      how: `Took ${fieldLabel(field)} from “${value}” in ${fileOf(source)}`,
     };
   }
   return null;
@@ -130,7 +130,7 @@ function repairPhone(record: CanonicalRecord): RepairResult | null {
     return {
       field: "phoneNumber",
       value: phone,
-      how: `Normalized Phone Number "${value}" from ${fileOf(source)} on the second attempt`,
+      how: `Normalized Phone Number “${value}” from ${fileOf(source)}`,
     };
   }
   return null;
@@ -176,7 +176,7 @@ function repairText(field: keyof Employee, record: CanonicalRecord): RepairResul
     return {
       field,
       value: shaped,
-      how: `Filled ${fieldLabel(field)} from ${fileOf(source)} on the second attempt`,
+      how: `Filled ${fieldLabel(field)} from ${fileOf(source)}`,
     };
   }
   return null;

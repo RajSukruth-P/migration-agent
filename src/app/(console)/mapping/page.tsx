@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { useJob } from "@/components/job/JobProvider";
-import { fieldLabel } from "@/lib/agent/labels";
+import { fieldLabel, humanizeFields } from "@/lib/agent/labels";
 import { TARGET_FIELDS, type FieldMapping } from "@/lib/agent/types";
 import {
   Badge,
@@ -41,7 +41,7 @@ export default function MappingPage() {
       <Card padded={false}>
         <EmptyState
           title="No mapping yet"
-          body="Start a run from the header. The agent sends each file's column names, the Darwinbox schema and 20–50 sample rows to the model, then shows every decision here."
+          body="Start a run from the header. Column mapping for every file appears here."
         />
       </Card>
     );
@@ -59,7 +59,7 @@ export default function MappingPage() {
     <div className="space-y-5">
       <PageHeader
         title="Column mapping"
-        description="Every source column and what the agent did with it. Mappings at or above 80% confidence — or with a clear winner — are applied without asking; leftover columns are ignored on purpose."
+        description="Every source column and where it landed in Darwinbox. Clear matches are applied automatically; leftover columns are skipped. Close calls wait for you."
       />
 
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
@@ -148,16 +148,13 @@ export default function MappingPage() {
                         {Math.round(mapping.confidence * 100)}%
                       </span>
                     </span>
-                    {mapping.sampleSize ? (
-                      <span className="mt-0.5 block text-[11px] text-subtle">n={mapping.sampleSize}</span>
-                    ) : null}
                   </td>
                   <td className="px-3 py-2.5">
                     <Badge tone={statusTone(mapping.status)}>{statusLabel(mapping.status)}</Badge>
                   </td>
                   <td className="px-5 py-2.5 text-xs leading-5 text-muted">
-                    <span className="line-clamp-2" title={mapping.reason}>
-                      {mapping.reason}
+                    <span className="line-clamp-2" title={humanizeFields(mapping.reason)}>
+                      {humanizeFields(mapping.reason)}
                     </span>
                   </td>
                 </tr>
