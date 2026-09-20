@@ -61,19 +61,19 @@ async function chatJson(messages: Array<{ role: string; content: string }>, maxT
     });
     const raw = await response.text();
     if (!response.ok) {
-      throw new Error(`OpenRouter HTTP ${response.status}: ${raw.slice(0, 400)}`);
+      throw new Error("Could not complete column mapping. Please try again.");
     }
     const body = JSON.parse(raw) as {
       choices?: Array<{ message?: { content?: string } }>;
       error?: { message?: string };
     };
-    if (body.error?.message) throw new Error(body.error.message);
+    if (body.error?.message) throw new Error("Could not complete column mapping. Please try again.");
     const content = body.choices?.[0]?.message?.content;
-    if (!content) throw new Error("OpenRouter returned an empty response.");
+    if (!content) throw new Error("Could not complete column mapping. Please try again.");
     return parseJsonObject(content);
   } catch (error) {
     if (error instanceof Error && error.name === "AbortError") {
-      throw new Error("OpenRouter timed out while deciding mappings.");
+      throw new Error("Column mapping took too long. Please try again.");
     }
     throw error;
   } finally {
@@ -143,7 +143,7 @@ Rules:
         ? (target as TargetField | "ignore")
         : "ignore",
       confidence: asConfidence(row.confidence),
-      reason: String(row.reason ?? "OpenRouter mapping"),
+      reason: String(row.reason ?? "Mapped from the source column."),
       alternatives,
     });
   }
@@ -211,7 +211,7 @@ Reply JSON: {"columns":[{"sourceColumn":"","valueType":"","format":"","dateOrder
       enumValues: Array.isArray(row.enumValues) ? row.enumValues.map((v) => String(v)) : undefined,
       nullable: Boolean(row.nullable),
       confidence: asConfidence(row.confidence),
-      reason: String(row.reason ?? "OpenRouter structure"),
+      reason: String(row.reason ?? "Inferred from the column values."),
     };
   }
   return structures;

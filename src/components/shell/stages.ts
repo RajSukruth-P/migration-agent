@@ -12,7 +12,7 @@ export const STAGES: Stage[] = [
   { id: "files", label: "Read files", hint: "Ingest every export", phases: ["ingesting"] },
   { id: "columns", label: "Map columns", hint: "Source columns to Darwinbox fields", phases: ["mapping", "awaiting_mapping"] },
   { id: "rows", label: "Clean rows", hint: "Normalize, merge, validate", phases: ["profiling", "cleaning", "reconciling", "validating"] },
-  { id: "review", label: "Your review", hint: "Only what failed twice", phases: ["awaiting_human"] },
+  { id: "review", label: "Your review", hint: "Only what cannot be decided", phases: ["awaiting_human"] },
   { id: "push", label: "Push", hint: "Write to Darwinbox, retry, roll back", phases: ["pushing", "complete"] },
 ];
 
@@ -30,9 +30,9 @@ export function stageStates(phase: JobPhase | null): StageState[] {
 export const PHASE_LABEL: Record<JobPhase, string> = {
   idle: "Waiting for files",
   ingesting: "Reading files",
-  mapping: "Asking the model to map columns",
+  mapping: "Mapping columns",
   awaiting_mapping: "Waiting on your column decision",
-  profiling: "Typing each column",
+  profiling: "Reading column formats",
   cleaning: "Cleaning values",
   reconciling: "Merging people across files",
   validating: "Validating records",

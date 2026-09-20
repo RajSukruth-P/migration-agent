@@ -149,13 +149,13 @@ export default function OverviewPage() {
             </ul>
             {job.files.length > 1 && stats.uniquePeople ? (
               <p className="mt-3 text-xs leading-5 text-muted">
-                Reconciled into <span className="text-navy">{stats.uniquePeople} people</span> on email, then legacy ID.
+                Merged into <span className="text-navy">{stats.uniquePeople} people</span>.
               </p>
             ) : null}
           </Card>
 
           <Card>
-            <CardHeader title="Where the line is drawn" hint="Why you are not confirming every field" />
+            <CardHeader title="How decisions work" hint="Why you are not confirming every field" />
             <div className="mb-3 flex flex-wrap gap-1.5">
               <Badge tone="teal">{stats.autoMapped} applied alone</Badge>
               <Badge tone="neutral">{stats.ignoredColumns} ignored</Badge>

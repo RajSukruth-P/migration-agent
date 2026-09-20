@@ -32,7 +32,7 @@ export default function DecisionsPage() {
     <div className="space-y-5">
       <PageHeader
         title="Decisions"
-        description="The agent asks only when two answers are genuinely competing, or when a value failed cleanup twice. Everything else is applied and written to the audit trail."
+        description="The agent asks only when two answers are genuinely competing, or a value cannot be cleaned. Everything else is applied and written to the audit trail."
       />
 
       <div className="grid gap-3 sm:grid-cols-4">
@@ -66,7 +66,7 @@ export default function DecisionsPage() {
         <div>
           <SectionTitle
             title="Record decisions"
-            hint="Each of these already failed a second repair pass that looked across every source row for the person."
+            hint="These values could not be cleaned from the source files."
           />
           <div className="space-y-4">
             {recordEscalations.map((item) => (
