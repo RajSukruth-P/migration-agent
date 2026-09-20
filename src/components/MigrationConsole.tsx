@@ -2,11 +2,10 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { Escalation, JobPhase, JobSnapshot } from "@/lib/agent/types";
-import { ActivityPanel } from "./ActivityPanel";
-import { AuditPanel } from "./AuditPanel";
 import { EscalationQueue } from "./EscalationQueue";
 import { MappingPanel } from "./MappingPanel";
 import { RecordsPanel } from "./RecordsPanel";
+import { RowDetailPanel } from "./RowDetailPanel";
 
 const PHASE_COPY: Record<JobPhase | "idle", string> = {
   idle: "Ready",
@@ -35,6 +34,18 @@ export function MigrationConsole() {
   useEffect(() => {
     return () => sourceRef.current?.close();
   }, []);
+
+  // Everything lives in server memory for this prototype, so a reload throws
+  // the run away. Make the browser ask first.
+  useEffect(() => {
+    if (!job) return;
+    function confirmLeave(event: BeforeUnloadEvent) {
+      event.preventDefault();
+      event.returnValue = "";
+    }
+    window.addEventListener("beforeunload", confirmLeave);
+    return () => window.removeEventListener("beforeunload", confirmLeave);
+  }, [job]);
 
   function listen(id: string) {
     sourceRef.current?.close();
@@ -112,20 +123,20 @@ export function MigrationConsole() {
   const mappingPending = openEscalations.some(
     (item) => item.kind === "ambiguous_mapping" || item.kind === "ambiguous_structure",
   );
-  // Fall back to the first visible person so the audit panel is never blank
+  // Fall back to the first visible person so the detail panel is never blank
   // while a run is streaming in and rows keep changing underneath us.
   const visibleRows = job?.records.filter((record) => record.status !== "dropped") ?? [];
   const selectedId =
     pickedId && visibleRows.some((row) => row.id === pickedId) ? pickedId : (visibleRows[0]?.id ?? null);
   const selected = job?.records.find((record) => record.id === selectedId) ?? null;
-  const files = job?.files ?? [];
+  const waitingOnColumns = mappingPending || job?.phase === "awaiting_mapping";
 
   return (
     <div className="flex h-full min-h-0 flex-col overflow-hidden bg-background">
       <header className="flex h-14 shrink-0 items-center justify-between gap-4 border-b border-stroke bg-white px-5">
         <div className="min-w-0">
           <h1 className="text-base font-semibold text-navy">Migration Agent</h1>
-          <p className="truncate text-xs text-muted">{statusLine(job, receivedNote, mappingPending)}</p>
+          <p className="truncate text-xs text-muted">{statusLine(job, receivedNote, Boolean(waitingOnColumns))}</p>
         </div>
         <div className="flex shrink-0 items-center gap-3">
           {job?.stats.failed ? (
@@ -163,41 +174,45 @@ export function MigrationConsole() {
         </div>
       </header>
 
-      {error ? <p className="shrink-0 px-5 py-2 text-sm text-red-700">{error}</p> : null}
+      <p className="flex h-7 shrink-0 items-center gap-2 border-b border-stroke bg-[#fdf6ee] px-5 text-[11px] text-accent">
+        This run lives in memory only. Refreshing or restarting the server loses the files, mapping and audit trail.
+      </p>
+
+      {error ? <p className="shrink-0 border-b border-stroke px-5 py-2 text-sm text-red-700">{error}</p> : null}
 
       <EscalationQueue
         items={openEscalations}
         onResolve={(escalationId, action, payload) => command("resolve", { escalationId, action, payload })}
       />
 
-      <div className="grid min-h-0 flex-1 grid-cols-[260px_minmax(0,1fr)] overflow-hidden">
-        <MappingPanel mappings={job?.mappings ?? []} files={files} />
-        <div className="grid min-h-0 grid-rows-[minmax(0,1fr)_148px] overflow-hidden bg-white">
+      <div className="grid min-h-0 flex-1 grid-cols-[220px_minmax(0,1fr)] overflow-hidden">
+        <div className="min-h-0 overflow-hidden border-r border-stroke">
+          <MappingPanel mappings={job?.mappings ?? []} files={job?.files ?? []} />
+        </div>
+        <div className="grid min-h-0 grid-rows-[minmax(0,1fr)_240px] overflow-hidden">
           <RecordsPanel
             records={job?.records ?? []}
             selectedId={selectedId}
             onSelect={setPickedId}
             phase={job?.phase ?? "idle"}
-            mappingPending={mappingPending || job?.phase === "awaiting_mapping"}
+            mappingPending={Boolean(waitingOnColumns)}
           />
-          <div className="grid min-h-0 grid-cols-2 overflow-hidden">
-            <AuditPanel
-              record={selected}
-              mappings={job?.mappings ?? []}
-              escalations={job?.escalations ?? []}
-              mappingPending={mappingPending || job?.phase === "awaiting_mapping" || job?.phase === "mapping"}
-            />
-            <ActivityPanel events={job?.events ?? []} />
-          </div>
+          <RowDetailPanel
+            record={selected}
+            mappings={job?.mappings ?? []}
+            escalations={job?.escalations ?? []}
+            events={job?.events ?? []}
+            mappingPending={Boolean(waitingOnColumns) || job?.phase === "mapping"}
+          />
         </div>
       </div>
     </div>
   );
 }
 
-function statusLine(job: JobSnapshot | null, receivedNote: string, mappingPending: boolean): string {
+function statusLine(job: JobSnapshot | null, receivedNote: string, waitingOnColumns: boolean): string {
   if (!job) return receivedNote || "Employee migration";
-  if (mappingPending || job.phase === "awaiting_mapping") {
+  if (waitingOnColumns) {
     const count = job.escalations.filter(
       (item) => item.status === "open" && (item.kind === "ambiguous_mapping" || item.kind === "ambiguous_structure"),
     ).length;

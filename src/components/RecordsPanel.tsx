@@ -1,7 +1,9 @@
 "use client";
 
-import { auditSummary } from "@/lib/agent/audit";
+import { sourceFiles } from "@/lib/agent/compare";
 import type { CanonicalRecord, JobPhase } from "@/lib/agent/types";
+
+const GRID = "grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)_84px]";
 
 export function RecordsPanel({
   records,
@@ -19,39 +21,50 @@ export function RecordsPanel({
   const rows = records.filter((record) => record.status !== "dropped");
 
   return (
-    <section className="flex h-full min-h-0 flex-col overflow-hidden">
-      <div className="grid shrink-0 grid-cols-[minmax(0,1.2fr)_minmax(0,1.4fr)_88px_minmax(0,1.1fr)] gap-3 border-b border-stroke px-4 py-2 text-xs text-muted">
-        <span>Name</span>
-        <span>Email</span>
-        <span>Status</span>
-        <span>Audit</span>
+    <section className="flex h-full min-h-0 flex-col overflow-hidden bg-white">
+      <div className="flex shrink-0 items-baseline justify-between gap-3 border-b border-stroke px-4 py-2">
+        <h2 className="text-sm font-semibold text-navy">People</h2>
+        <p className="truncate text-xs text-muted">{rows.length ? `${rows.length} rows · click for detail` : ""}</p>
       </div>
       {rows.length ? (
-        <ul
-          className="grid min-h-0 flex-1 overflow-hidden"
-          style={{ gridTemplateRows: `repeat(${rows.length}, minmax(0, 1fr))` }}
-        >
-          {rows.map((record) => {
-            const active = record.id === selectedId;
-            return (
-              <li key={record.id} className="min-h-0 border-b border-stroke last:border-b-0">
-                <button
-                  onClick={() => onSelect(record.id)}
-                  className={`grid h-full w-full grid-cols-[minmax(0,1.2fr)_minmax(0,1.4fr)_88px_minmax(0,1.1fr)] items-center gap-3 px-4 text-left text-xs ${
-                    active ? "bg-[#f4f1ec]" : "bg-white"
-                  }`}
-                >
-                  <span className="truncate font-medium text-navy">
-                    {record.data.firstName} {record.data.lastName}
-                  </span>
-                  <span className="truncate text-muted">{record.data.email || "No email"}</span>
-                  <span className="truncate text-muted">{statusLabel(record)}</span>
-                  <span className="truncate text-muted">{auditSummary(record)}</span>
-                </button>
-              </li>
-            );
-          })}
-        </ul>
+        <>
+          <div
+            className={`grid shrink-0 ${GRID} gap-3 border-b border-stroke bg-background px-4 py-1 text-[10px] uppercase tracking-wide text-muted`}
+          >
+            <span>Person</span>
+            <span>Source file</span>
+            <span>Status</span>
+          </div>
+          <ul className="min-h-0 flex-1 overflow-y-auto">
+            {rows.map((record) => {
+              const active = record.id === selectedId;
+              const files = sourceFiles(record).join(" + ");
+              return (
+                <li key={record.id}>
+                  <button
+                    onClick={() => onSelect(record.id)}
+                    className={`grid w-full ${GRID} items-center gap-3 border-b border-stroke px-4 py-1.5 text-left ${
+                      active ? "bg-[#f1efe9]" : "bg-white hover:bg-[#faf9f6]"
+                    }`}
+                  >
+                    <span className="min-w-0">
+                      <span className="block truncate text-xs font-medium text-navy">
+                        {record.data.firstName} {record.data.lastName}
+                      </span>
+                      <span className="block truncate text-[11px] text-muted">
+                        {record.data.email || "No email"}
+                      </span>
+                    </span>
+                    <span className="truncate text-[11px] text-muted" title={files}>
+                      {files || "—"}
+                    </span>
+                    <span className={`truncate text-[11px] ${statusTone(record)}`}>{statusLabel(record)}</span>
+                  </button>
+                </li>
+              );
+            })}
+          </ul>
+        </>
       ) : (
         <p className="px-4 py-6 text-sm leading-6 text-muted">{emptyCopy(phase, mappingPending)}</p>
       )}
@@ -79,4 +92,10 @@ function statusLabel(record: CanonicalRecord): string {
   if (record.status === "failed") return "Failed";
   if (record.status === "rolled_back") return "Rolled back";
   return record.status;
+}
+
+function statusTone(record: CanonicalRecord): string {
+  if (record.status === "blocked" || record.status === "failed") return "text-accent";
+  if (record.status === "pushed") return "text-teal";
+  return "text-muted";
 }
