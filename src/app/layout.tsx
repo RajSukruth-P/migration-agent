@@ -14,16 +14,13 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "Migration Agent",
-  description: "Human-supervised employee migration agent",
+  description: "Human-supervised employee migration into Darwinbox",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html
-      lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full overflow-hidden antialiased`}
-    >
-      <body className="h-full overflow-hidden bg-background text-foreground">{children}</body>
+    <html lang="en" className={`${geistSans.variable} ${geistMono.variable}`}>
+      <body className="min-h-screen bg-background text-foreground">{children}</body>
     </html>
   );
 }

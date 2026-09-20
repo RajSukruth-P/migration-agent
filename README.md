@@ -44,15 +44,30 @@ The agent runs in two stages, and it will not touch a single row until the colum
 
 Corrections typed by the consultant are validated the same way the agent validates itself — a hire date that is not a date, or an email that is not an email, is rejected with a reason rather than written to the tenant. The mock API keys on email, so re-running the same export updates people instead of failing on duplicates.
 
+## The console
+
+Six views, each answering one question a consultant actually asks. The run is held in
+server memory and streamed over SSE, so every tab shows the same live state and a browser
+reload re-attaches to the run instead of losing it.
+
+| Tab | What it answers |
+| --- | --- |
+| **Overview** | Where is the run, and does anything need me right now? |
+| **Mapping** | What did the agent do with every source column, and how sure was it? |
+| **People** | What does each person look like after merging — and what did they look like in the file? |
+| **Decisions** | What is genuinely ambiguous, with enough context to settle it in one glance? |
+| **Darwinbox** | What actually landed in the target, and what failed? |
+| **Activity** | The full run record, filterable and downloadable. |
+
 ## Demo script
 
-1. Click **Run sample**. The header confirms the files it received.
-2. Watch **Live activity** while OpenRouter maps columns, and **Column mapping** fill in on the left.
-3. Resolve the mapping queue item (`Role_or_Dept` is the usual one). Row migration starts only after this.
+1. Click **Run sample**. Overview shows the five-step pipeline and the three files it received.
+2. Open **Mapping** while it works: 27 columns applied on the model's confidence, 7 leftover columns ignored, 1 close call held back.
+3. Settle the column decision (`Role_or_Dept` is the usual one) on **Overview** or **Decisions**. Row migration starts only after this — the stepper will not move past *Map columns* until it is answered.
 4. Watch the agent repair Maya Joshi's mangled email (`maya.joshi at contract dot northwind dot com`) on its second attempt instead of asking.
-5. Resolve the three that failed twice: Meera's `Q3 2019` hire date, Karan's missing last name, Wei Chen's missing email. Try typing something invalid first — the agent refuses it.
-6. The agent pushes. Use **Retry** for Samir Khan's simulated 503, and **Rollback** to undo the tenant.
-7. Click any person to see that row's audit trail: source row, mappings applied, merges, your decision, and the target ID.
+5. Resolve the three that failed twice: Meera's `Q3 2019` hire date, Karan's missing last name, Wei Chen's missing email. Type `sometime in 2019` into Meera's first — the agent validates your answer the same way it validates its own and refuses it on the card.
+6. Open **Darwinbox**: 27 written, 1 simulated 503 for Samir Khan. Hit **Retry** and it becomes 28. **Roll back this run** empties the tenant again.
+7. On **People**, open anyone to see which file and row each value came from, the original next to the migrated value, and that person's audit trail.
 
 ## Where to review agent handling
 
@@ -65,6 +80,8 @@ Corrections typed by the consultant are validated the same way the agent validat
 | `src/lib/agent/reconcile.ts` | Identity merge and conflict detection |
 | `src/lib/agent/engine.ts` | Two-stage pipeline, push, retry, rollback |
 | `src/lib/agent/audit.ts` | Per-row audit trail |
+| `src/components/job/JobProvider.tsx` | One SSE subscription shared by every tab, and reload recovery |
+| `src/components/job/DecisionCard.tsx` | An escalation with enough context to resolve in one glance |
 | `WRITEUP.md` | Why the line is drawn there |
 
 ## Target schema
