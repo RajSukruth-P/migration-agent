@@ -43,7 +43,7 @@ export default function ActivityPage() {
     <div className="space-y-5">
       <PageHeader
         title="Activity log"
-        description="The full run record: what the agent read, what it decided, what it repaired on the second attempt, and what it wrote to Darwinbox."
+        description="The full run record: files received, columns mapped, values cleaned, and records written to Darwinbox."
         action={
           <Button size="sm" onClick={() => download(events)}>
             Download log

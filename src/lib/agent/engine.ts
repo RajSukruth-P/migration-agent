@@ -28,7 +28,7 @@ const PACE = 70;
 export class MigrationJob extends EventEmitter {
   id: string;
   clientName = "Northwind People Ops";
-  targetSystem = "Darwinbox (mock)";
+  targetSystem = "Darwinbox";
   phase: JobPhase = "idle";
   createdAt = nowIso();
   tables: SourceTable[] = [];
@@ -152,10 +152,7 @@ export class MigrationJob extends EventEmitter {
 
   private async mapStage() {
     this.setPhase("mapping");
-    this.log(
-      "info",
-      "Sending each file's column names, the Darwinbox target schema, and 20-50 random rows to OpenRouter.",
-    );
+    this.log("info", "Mapping source columns to Darwinbox fields.");
     this.mappings = await mapTablesWithAi(this.tables);
     this.applyMappingOverrides();
 
@@ -164,12 +161,12 @@ export class MigrationJob extends EventEmitter {
     const unsure = this.mappings.filter((m) => m.status === "escalated");
     this.log(
       "success",
-      `OpenRouter auto-mapped ${auto.length} column(s). ${unsure.length} close call(s) need you. Ignored ${ignored.length} leftover column(s).`,
+      `Mapped ${auto.length} column${auto.length === 1 ? "" : "s"} automatically. ${unsure.length} need a decision. Skipped ${ignored.length} leftover column${ignored.length === 1 ? "" : "s"}.`,
     );
     for (const mapping of auto) {
       this.log(
         "info",
-        `${mapping.sourceFile} · ${mapping.sourceColumn} → ${mapping.targetField} (${Math.round(mapping.confidence * 100)}%, n=${mapping.sampleSize ?? "—"})`,
+        `${mapping.sourceFile} · ${mapping.sourceColumn} → ${fieldLabel(String(mapping.targetField))}`,
       );
     }
     for (const mapping of ignored) {
@@ -208,8 +205,7 @@ export class MigrationJob extends EventEmitter {
 
   private async rowStage() {
     this.setPhase("profiling");
-    this.log("info", "Column mapping is done. Now migrating rows.");
-    this.log("info", "Asking OpenRouter for each mapped column's structure type (date order, email, enum, id).");
+    this.log("info", "Column mapping is done. Cleaning and merging rows.");
     this.mappings = await profileMappingsWithAi(this.tables, this.mappings);
     this.applyMappingOverrides();
     for (const mapping of this.mappings) {
@@ -229,9 +225,9 @@ export class MigrationJob extends EventEmitter {
       }
       this.log(
         "success",
-        `${mapping.sourceFile} · ${mapping.sourceColumn}: ${mapping.structure.valueType}${
-          mapping.structure.format ? ` · ${mapping.structure.format}` : ""
-        }${mapping.structure.dateOrder ? ` · ${mapping.structure.dateOrder}` : ""} (${Math.round(mapping.structure.confidence * 100)}%)`,
+        mapping.structure.dateOrder
+          ? `${mapping.sourceFile} · ${mapping.sourceColumn}: reading dates as ${dateOrderLabel(mapping.structure.dateOrder)}`
+          : `${mapping.sourceFile} · ${mapping.sourceColumn}: ${mapping.structure.valueType}`,
       );
     }
     this.profiled = true;
@@ -349,7 +345,7 @@ export class MigrationJob extends EventEmitter {
       }
     });
     this.setPhase("complete");
-    this.log("warn", `Rolled back ${count} employee(s) from the mock Darwinbox tenant.`);
+    this.log("warn", `Rolled back ${count} employee${count === 1 ? "" : "s"} from Darwinbox.`);
     this.emit("change");
   }
 
@@ -395,7 +391,7 @@ export class MigrationJob extends EventEmitter {
     }
     this.log(
       "success",
-      `Reconciled ${cleaned.length} source rows into ${this.records.filter((r) => r.status !== "dropped").length} people using email, then employee id.`,
+      `Matched ${cleaned.length} source rows into ${this.records.filter((r) => r.status !== "dropped").length} people.`,
     );
 
     for (const conflict of result.conflicts) {
@@ -520,8 +516,8 @@ export class MigrationJob extends EventEmitter {
 
     const repair = repairFailure(failure, record);
     if (!repair) {
-      record.issues.push(`${fieldLabel(failure.field)}: second attempt failed, so I asked you.`);
-      this.log("warn", `${failure.name}: ${fieldLabel(failure.field)} failed twice. Escalating.`);
+      record.issues.push(`${fieldLabel(failure.field)} could not be cleaned.`);
+      this.log("warn", `${failure.name}: ${fieldLabel(failure.field)} still needs a decision.`);
       return false;
     }
 
@@ -562,9 +558,9 @@ export class MigrationJob extends EventEmitter {
       );
       if (!mapping) continue;
       const aiOrder = mapping.structure?.dateOrder;
-      if (aiOrder === "DMY") notes.push(`${table.fileName}: OpenRouter typed hire dates as day-first (${mapping.structure?.format ?? "DMY"}).`);
-      else if (aiOrder === "MDY") notes.push(`${table.fileName}: OpenRouter typed hire dates as month-first (${mapping.structure?.format ?? "MDY"}).`);
-      else if (aiOrder === "YMD") notes.push(`${table.fileName}: OpenRouter typed hire dates as ISO-like (YMD).`);
+      if (aiOrder === "DMY") notes.push(`${table.fileName}: hire dates are day-first.`);
+      else if (aiOrder === "MDY") notes.push(`${table.fileName}: hire dates are month-first.`);
+      else if (aiOrder === "YMD") notes.push(`${table.fileName}: hire dates are year-first.`);
       else {
         const order = inferDateOrder(table.rows.map((row) => row[mapping.sourceColumn] ?? ""));
         if (order === "DMY") notes.push(`${table.fileName}: inferred day-first dates from unambiguous values (e.g. 23/07/2018).`);
@@ -638,17 +634,18 @@ export class MigrationJob extends EventEmitter {
       this.log(
         result.ok ? "success" : "error",
         result.ok
-          ? `Upserted ${collapseSpace(`${data.firstName} ${data.lastName}`)} → ${result.targetId}`
+          ? `Wrote ${collapseSpace(`${data.firstName} ${data.lastName}`)} as ${result.targetId}`
           : `Failed ${data.email}: ${result.error}`,
       );
     }
     const failed = this.records.filter((r) => r.status === "failed").length;
     this.setPhase("complete");
+    const written = listTargetEmployees(this.id).length;
     this.log(
       failed ? "warn" : "success",
       failed
-        ? `Push finished with ${failed} failure(s). Retry is available; rollback will delete this job’s rows from the mock tenant.`
-        : `All ready records are in ${this.targetSystem}. ${listTargetEmployees(this.id).length} row(s) live.`,
+        ? `Push finished with ${failed} failure${failed === 1 ? "" : "s"}. Retry is available, or roll back this run.`
+        : `All ready records are in Darwinbox. ${written} ${written === 1 ? "person" : "people"} written.`,
     );
   }
 }
@@ -666,4 +663,10 @@ export function saveJob(job: MigrationJob) {
 
 export function getJob(id: string): MigrationJob | undefined {
   return jobStore().get(id);
+}
+
+function dateOrderLabel(order: "DMY" | "MDY" | "YMD"): string {
+  if (order === "MDY") return "month-first";
+  if (order === "YMD") return "year-first";
+  return "day-first";
 }

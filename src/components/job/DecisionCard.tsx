@@ -39,7 +39,7 @@ export function DecisionCard({
         {isMapping ? (
           <span className="text-xs text-muted">Every row in this file waits on this answer</span>
         ) : (
-          <span className="text-xs text-muted">Failed cleanup twice</span>
+          <span className="text-xs text-muted">Could not be cleaned from the source files</span>
         )}
       </div>
 
@@ -52,7 +52,7 @@ export function DecisionCard({
         </p>
       ) : retried ? (
         <p className="mt-3 rounded-lg border border-[#e9d8b4] bg-amber-soft px-3 py-2 text-xs leading-5 text-amber">
-          Your last answer did not pass validation, so the agent is asking again rather than writing it to Darwinbox.
+          Your last answer could not be used. Please try a different value.
         </p>
       ) : null}
 
