@@ -18,9 +18,9 @@ export const POLICY = {
   optionalConflictMode: "keep_first_and_log" as const,
 };
 
-export const POLICY_SUMMARY = `OpenRouter maps columns from names plus 20-50 sample rows. I apply a mapping when confidence is ≥ 80%, or when one field clearly wins. I ignore leftover columns (notes, bank account, worker type, status) myself.
+export const POLICY_SUMMARY = `Clear column matches are applied automatically. Leftover columns such as notes, bank account, or status are skipped.
 
-I only ask you when two Darwinbox fields are close, a date order cannot be inferred, files disagree on a required value, or I would have to invent a name or email.`;
+You are asked only when two Darwinbox fields are close, files disagree on a required value, or a name, email, or date cannot be cleaned.`;
 
 export const DEPARTMENT_SYNONYMS: Record<string, string> = {
   "people operations": "People Ops",

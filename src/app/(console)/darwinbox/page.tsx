@@ -30,7 +30,7 @@ export default function DarwinboxPage() {
       <Card padded={false}>
         <EmptyState
           title="The tenant is empty"
-          body="This is a mock Darwinbox API. Once the agent pushes records, everything it wrote — plus failures, retries and rollbacks — shows up here."
+          body="Once the agent writes records, they appear here with any failures, retries, and rollbacks."
         />
       </Card>
     );
@@ -43,7 +43,7 @@ export default function DarwinboxPage() {
     <div className="space-y-5">
       <PageHeader
         title="Darwinbox tenant"
-        description="What the agent actually wrote to the mock target API, with per-record success and failure. Retries reuse the same identity key, so nothing is duplicated."
+        description="What was written to Darwinbox, with success and failure per person. Retry sends only the failed records; roll back removes this run from the tenant."
         action={
           <div className="flex gap-2">
             {stats.failed ? (
@@ -61,7 +61,7 @@ export default function DarwinboxPage() {
       />
 
       <div className="grid gap-3 sm:grid-cols-4">
-        <Stat label="In the tenant" value={tenant.length} hint="live from the mock API" tone={tenant.length ? "teal" : "neutral"} />
+        <Stat label="In the tenant" value={tenant.length} hint="currently written" tone={tenant.length ? "teal" : "neutral"} />
         <Stat label="Pushed" value={stats.pushed} hint="this run" />
         <Stat label="Failed" value={stats.failed} hint="retryable" tone={stats.failed ? "danger" : "neutral"} />
         <Stat label="Rolled back" value={stats.rolledBack} hint="removed again" tone={stats.rolledBack ? "amber" : "neutral"} />
@@ -71,7 +71,7 @@ export default function DarwinboxPage() {
         <Card>
           <CardHeader
             title="Failed pushes"
-            hint="The target API reported these per record. Retry re-sends only these."
+            hint="These records were not written. Retry sends only these."
             action={
               <Button size="sm" onClick={() => void retry()}>
                 Retry all
